@@ -1,0 +1,21 @@
+{
+  "slug": "rabdan-ad",
+  "title": "Rabdan AD",
+  "order": 5,
+  "published": true,
+  "poster": "/media/projects/rabdan-ad/cover.jpg",
+  "category": "AI advertising",
+  "year": "2026",
+  "role": "Creative direction & production",
+  "summary": "An AI-generated advertising video created in 2026 for Rabdan Developments, built around a simple idea: finding and buying a home in Dubai should feel clear, effortless, and free from unnecessary complexity.",
+  "description": "An AI-generated advertising video created in 2026 for Rabdan Developments, built around a simple idea: finding and buying a home in Dubai should feel clear, effortless, and free from unnecessary complexity.\n\nI developed the project end-to-end, including concept development, creative direction, AI production, editing, post-production, and final delivery.\n\nThe entire video was produced through an AI-driven workflow, from the initial idea to the final execution.",
+  "videos": [
+    {
+      "title": "Rabdan AD",
+      "youtube": "https://youtu.be/VPx3jdG_PdI",
+      "format": "landscape"
+    }
+  ],
+  "stills": [],
+  "press": []
+}

@@ -1,0 +1,27 @@
+{
+  "slug": "archiving-the-now",
+  "title": "Archiving the Now",
+  "order": 3,
+  "published": true,
+  "poster": "/media/projects/archiving-the-now/cover.jpg",
+  "category": "Documentary",
+  "year": "2024",
+  "role": "Cinematography & editing",
+  "summary": "Created as part of the Archiving the Now exhibition at Sikka Art & Design Festival 2024, commissioned by Dubai Culture.",
+  "description": "Created as part of the Archiving the Now exhibition at Sikka Art & Design Festival 2024, commissioned by Dubai Culture.\n\nThis documentary video explores the 40-year photographic journey of Mohammad Ahmad Bin Hashem, documenting key moments in the history of the UAE.\n\nI handled the cinematography and editing, shaping archival material and interview-based content into a cohesive documentary narrative.",
+  "videos": [
+    {
+      "title": "Archiving the Now",
+      "youtube": "https://youtu.be/WZiwqsg2Efk",
+      "format": "landscape"
+    }
+  ],
+  "stills": [
+    {
+      "image": "/media/projects/archiving-the-now/detail-01.jpg",
+      "caption": "With Mohammad Ahmad Bin Hashem",
+      "kind": "event"
+    }
+  ],
+  "press": []
+}

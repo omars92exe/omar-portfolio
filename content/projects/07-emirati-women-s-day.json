@@ -1,0 +1,21 @@
+{
+  "slug": "emirati-women-s-day",
+  "title": "Emirati Women’s Day",
+  "order": 7,
+  "published": true,
+  "poster": "/media/projects/emirati-women-s-day/cover.jpg",
+  "category": "AI film",
+  "year": "2026",
+  "role": "Creative direction & production",
+  "summary": "An AI-generated video created in 2026 for Rabdan Developments in celebration of Emirati Women’s Day.",
+  "description": "An AI-generated video created in 2026 for Rabdan Developments in celebration of Emirati Women’s Day.\n\nI developed the project end-to-end, including concept development, creative direction, AI production, editing, post-production, and final delivery.\n\nThe video was created to present Emirati women through a refined, cinematic visual approach using a fully AI-driven production workflow.",
+  "videos": [
+    {
+      "title": "Emirati Women’s Day",
+      "youtube": "https://youtube.com/shorts/x8QUVceEA8M",
+      "format": "vertical"
+    }
+  ],
+  "stills": [],
+  "press": []
+}

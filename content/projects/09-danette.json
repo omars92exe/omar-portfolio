@@ -1,0 +1,51 @@
+{
+  "slug": "danette",
+  "title": "Danette",
+  "order": 9,
+  "published": true,
+  "poster": "/media/projects/danette/cover.jpg",
+  "category": "AI advertising",
+  "year": "",
+  "role": "Creative direction & production",
+  "summary": "A series of short-form AI-generated advertisements created for Danette, focused on presenting its dessert and dairy products through cinematic, product-driven visuals.",
+  "description": "A series of short-form AI-generated advertisements created for Danette, focused on presenting its dessert and dairy products through cinematic, product-driven visuals.\n\nI developed the project end-to-end, including concept development, creative direction, visual development, AI production, editing, post-production, and final delivery.\n\nThe campaign was produced through a fully AI-driven workflow, with each video designed as a concise digital advertisement built around strong product presentation and visual storytelling.",
+  "videos": [
+    {
+      "title": "Video 1",
+      "youtube": "https://youtube.com/shorts/TucpyWfEg0w",
+      "format": "vertical"
+    },
+    {
+      "title": "Video 2",
+      "youtube": "https://youtube.com/shorts/6Zey7UX7Dno",
+      "format": "vertical"
+    },
+    {
+      "title": "Video 3",
+      "youtube": "https://youtube.com/shorts/9lKvkVNtLGU",
+      "format": "vertical"
+    },
+    {
+      "title": "Video 4",
+      "youtube": "https://youtube.com/shorts/1ngl9u19j1c",
+      "format": "vertical"
+    },
+    {
+      "title": "Video 5",
+      "youtube": "https://youtube.com/shorts/Irr5Vw7osrU",
+      "format": "vertical"
+    },
+    {
+      "title": "Video 6",
+      "youtube": "https://youtube.com/shorts/xLvtsr2pQGs",
+      "format": "vertical"
+    },
+    {
+      "title": "Video 7",
+      "youtube": "https://youtube.com/shorts/uFtubLq8Kpw",
+      "format": "vertical"
+    }
+  ],
+  "stills": [],
+  "press": []
+}

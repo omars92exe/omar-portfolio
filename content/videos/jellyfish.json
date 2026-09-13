@@ -1,0 +1,16 @@
+{
+  "slug": "jellyfish",
+  "title": "Jellyfish",
+  "order": 3,
+  "published": true,
+  "youtube": "https://www.youtube.com/watch?v=06mL6CP1umE",
+  "poster": "/media/jellyfish.jpg",
+  "category": "AI film",
+  "year": "2025",
+  "role": "Concept, AI generation & editing",
+  "credit": "Independent work",
+  "summary": "A dream suspended beneath the surface.",
+  "description": "An independently developed visual experiment, from concept and image generation through editing and final delivery.",
+  "stills": [],
+  "press": []
+}

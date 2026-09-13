@@ -1,0 +1,31 @@
+{
+  "slug": "rabdan-avenue",
+  "title": "Rabdan Avenue",
+  "order": 4,
+  "published": true,
+  "poster": "/media/projects/rabdan-avenue/cover.jpg",
+  "category": "Launch campaign",
+  "year": "2026",
+  "role": "Creative direction & production",
+  "summary": "A three-video launch campaign created in 2026 for Rabdan Developments, consisting of a Launch Video, Render Video, and Lifestyle Video.",
+  "description": "A three-video launch campaign created in 2026 for Rabdan Developments, consisting of a Launch Video, Render Video, and Lifestyle Video.\n\nI developed the project end-to-end using AI, covering concept development, creative direction, AI production, post-production, editing, and final delivery. The three videos were designed as one cohesive visual campaign to introduce and position the new development.",
+  "videos": [
+    {
+      "title": "Launch Video",
+      "youtube": "https://youtu.be/uiv0MF1O0Q0",
+      "format": "landscape"
+    },
+    {
+      "title": "Render Video",
+      "youtube": "https://youtu.be/AV7wO28rZm4",
+      "format": "landscape"
+    },
+    {
+      "title": "Lifestyle Video",
+      "youtube": "https://youtube.com/shorts/989o_kimBkg",
+      "format": "vertical"
+    }
+  ],
+  "stills": [],
+  "press": []
+}

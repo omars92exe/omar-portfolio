@@ -1,0 +1,31 @@
+{
+  "slug": "ai-personal-experiments",
+  "title": "AI Personal Experiments",
+  "order": 11,
+  "published": true,
+  "poster": "/media/projects/ai-personal-experiments/cover.jpg",
+  "category": "Personal experiments",
+  "year": "",
+  "role": "Creative direction & production",
+  "summary": "A series of personal AI-driven cinematic experiments exploring memory, identity, Syria, and personal visual ideas through a more artistic and expressive approach rather than traditional commercial storytelling.",
+  "description": "A series of personal AI-driven cinematic experiments exploring memory, identity, Syria, and personal visual ideas through a more artistic and expressive approach rather than traditional commercial storytelling.\n\nI developed each piece entirely from concept to final execution, including creative direction, visual development, AI production, editing, post-production, and final delivery.\n\nPublished on my personal Instagram, the videos collectively reached over 350,000 views, generating strong organic engagement and wider interest around the work.",
+  "videos": [
+    {
+      "title": "Video 1",
+      "youtube": "https://youtube.com/shorts/Xuaq3a0QJuw",
+      "format": "vertical"
+    },
+    {
+      "title": "Video 2",
+      "youtube": "https://youtube.com/shorts/qCMgFfRy1kw",
+      "format": "vertical"
+    },
+    {
+      "title": "Video 3",
+      "youtube": "https://youtube.com/shorts/j5sNqzK393g",
+      "format": "vertical"
+    }
+  ],
+  "stills": [],
+  "press": []
+}

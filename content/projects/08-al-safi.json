@@ -1,0 +1,46 @@
+{
+  "slug": "al-safi",
+  "title": "Al Safi",
+  "order": 8,
+  "published": true,
+  "poster": "/media/projects/al-safi/cover.jpg",
+  "category": "AI advertising",
+  "year": "",
+  "role": "Creative direction & production",
+  "summary": "A series of short-form AI-generated advertisements created for Al Safi, designed for fast-paced digital and social media use.",
+  "description": "A series of short-form AI-generated advertisements created for Al Safi, designed for fast-paced digital and social media use.\n\nI developed the project end-to-end, covering concept development, creative direction, visual development, AI production, editing, post-production, and final delivery.\n\nEach video was built from the ground up using an AI-driven production workflow, with a focus on strong product presentation, cinematic visuals, and concise 15–20 second storytelling.",
+  "videos": [
+    {
+      "title": "Video 1",
+      "youtube": "https://youtube.com/shorts/yQInW38yrro",
+      "format": "vertical"
+    },
+    {
+      "title": "Video 2",
+      "youtube": "https://youtube.com/shorts/IIBwygHBFaA",
+      "format": "vertical"
+    },
+    {
+      "title": "Video 3",
+      "youtube": "https://youtube.com/shorts/IZmRI_9Soyc",
+      "format": "vertical"
+    },
+    {
+      "title": "Video 4",
+      "youtube": "https://youtube.com/shorts/V1EZxfx9B9U",
+      "format": "vertical"
+    },
+    {
+      "title": "Video 5",
+      "youtube": "https://youtube.com/shorts/zV-1O7JVZkw",
+      "format": "vertical"
+    },
+    {
+      "title": "Video 6",
+      "youtube": "https://youtube.com/shorts/e3r8hPbxtZw",
+      "format": "vertical"
+    }
+  ],
+  "stills": [],
+  "press": []
+}

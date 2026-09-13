@@ -1,0 +1,31 @@
+{
+  "slug": "uae-videos",
+  "title": "UAE Videos",
+  "order": 13,
+  "published": true,
+  "poster": "/media/projects/uae-videos/cover.jpg",
+  "category": "Social media series",
+  "year": "",
+  "role": "Video production",
+  "summary": "A series of social media videos created for Rabdan Developments to express solidarity with the UAE, appreciation for the country’s Armed Forces, and a sense of national unity during a significant period for the country.",
+  "description": "A series of social media videos created for Rabdan Developments to express solidarity with the UAE, appreciation for the country’s Armed Forces, and a sense of national unity during a significant period for the country.\n\nThe series included content around Eid, UAE Armed Forces Unification Day, and broader messages of support for the UAE, developed with a cinematic and respectful visual approach.\n\nAcross social media, the videos generated more than 1 million views, reflecting strong organic reach and audience engagement.",
+  "videos": [
+    {
+      "title": "Eid / Our Armed Forces",
+      "youtube": "https://youtube.com/shorts/XWe3d54jVZI",
+      "format": "vertical"
+    },
+    {
+      "title": "UAE Armed Forces Unification Day",
+      "youtube": "https://youtube.com/shorts/Q8e5iY9HJb8",
+      "format": "vertical"
+    },
+    {
+      "title": "In Support of the UAE",
+      "youtube": "https://youtube.com/shorts/R5pZ-wWMgAw",
+      "format": "vertical"
+    }
+  ],
+  "stills": [],
+  "press": []
+}

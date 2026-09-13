@@ -1,0 +1,47 @@
+{
+  "slug": "saffron-house",
+  "title": "Saffron House",
+  "order": 2,
+  "published": true,
+  "poster": "/media/projects/saffron-house/cover.jpg",
+  "category": "Documentary",
+  "year": "2025",
+  "role": "Creative direction & production",
+  "summary": "Created as part of the House of Saffron exhibition at Sikka Art & Design Festival 2025, commissioned by Dubai Culture. I led the full video production, including creative direction, cinematography, editing, and final delivery. The video explores the cultural significance of saffron in Emirati heritage through a cinematic documentary approach.",
+  "description": "Created as part of the House of Saffron exhibition at Sikka Art & Design Festival 2025, commissioned by Dubai Culture. I led the full video production, including creative direction, cinematography, editing, and final delivery. The video explores the cultural significance of saffron in Emirati heritage through a cinematic documentary approach.",
+  "videos": [
+    {
+      "title": "Saffron House",
+      "youtube": "https://youtu.be/Uif14YxZJaw",
+      "format": "landscape"
+    }
+  ],
+  "stills": [
+    {
+      "image": "/media/projects/saffron-house/detail-01.jpg",
+      "caption": "Al Khaleej newspaper",
+      "kind": "press"
+    },
+    {
+      "image": "/media/projects/saffron-house/detail-02.jpg",
+      "caption": "From the exhibition",
+      "kind": "event"
+    },
+    {
+      "image": "/media/projects/saffron-house/detail-03.jpg",
+      "caption": "From the exhibition",
+      "kind": "event"
+    },
+    {
+      "image": "/media/projects/saffron-house/detail-04.jpg",
+      "caption": "Gulf Today",
+      "kind": "press"
+    },
+    {
+      "image": "/media/projects/saffron-house/detail-05.jpg",
+      "caption": "Al Bayan",
+      "kind": "press"
+    }
+  ],
+  "press": []
+}

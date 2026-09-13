@@ -1,0 +1,36 @@
+{
+  "slug": "activia",
+  "title": "Activia",
+  "order": 10,
+  "published": true,
+  "poster": "/media/projects/activia/cover.jpg",
+  "category": "AI advertising",
+  "year": "",
+  "role": "Creative direction & production",
+  "summary": "A series of short-form AI-generated advertisements created for Activia, focused on presenting the brand and its products through clean, engaging, and lifestyle-driven visuals.",
+  "description": "A series of short-form AI-generated advertisements created for Activia, focused on presenting the brand and its products through clean, engaging, and lifestyle-driven visuals.\n\nI developed the project end-to-end, including concept development, creative direction, visual development, AI production, editing, post-production, and final delivery.\n\nThe campaign was created through a fully AI-driven production workflow, with each video designed as a concise digital advertisement tailored for social media.",
+  "videos": [
+    {
+      "title": "Video 1",
+      "youtube": "https://youtube.com/shorts/dCmb3lMbeAw",
+      "format": "vertical"
+    },
+    {
+      "title": "Video 2",
+      "youtube": "https://youtube.com/shorts/xBK70-pVYzM",
+      "format": "vertical"
+    },
+    {
+      "title": "Video 3",
+      "youtube": "https://youtube.com/shorts/NM8U_qwn0Ds",
+      "format": "vertical"
+    },
+    {
+      "title": "Video 4",
+      "youtube": "https://youtube.com/shorts/sbURPLTyIb8",
+      "format": "vertical"
+    }
+  ],
+  "stills": [],
+  "press": []
+}

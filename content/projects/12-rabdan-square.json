@@ -1,0 +1,26 @@
+{
+  "slug": "rabdan-square",
+  "title": "Rabdan Square",
+  "order": 12,
+  "published": true,
+  "poster": "/media/projects/rabdan-square/cover.jpg",
+  "category": "Launch campaign",
+  "year": "",
+  "role": "Creative direction & production",
+  "summary": "A two-video launch campaign created for Rabdan Square by Rabdan Developments, consisting of a Launch Video and an Interior Video.",
+  "description": "A two-video launch campaign created for Rabdan Square by Rabdan Developments, consisting of a Launch Video and an Interior Video.\n\nI developed the project end-to-end, including concept development, creative direction, AI production, editing, post-production, and final delivery.",
+  "videos": [
+    {
+      "title": "Launch Video",
+      "youtube": "https://youtube.com/shorts/G73Q3FQUMv4",
+      "format": "vertical"
+    },
+    {
+      "title": "Interiors Video",
+      "youtube": "https://youtube.com/shorts/aYq8iYEO1OI",
+      "format": "vertical"
+    }
+  ],
+  "stills": [],
+  "press": []
+}

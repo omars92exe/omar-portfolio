@@ -1,0 +1,21 @@
+{
+  "slug": "bingo-trailer",
+  "title": "Bingo Trailer",
+  "order": 6,
+  "published": true,
+  "poster": "/media/projects/bingo-trailer/cover.jpg",
+  "category": "AI series trailer",
+  "year": "2025",
+  "role": "Creative direction & production",
+  "summary": "An AI-generated trailer created in 2025 for BINGO, a proposed TV series developed as a pitch and proof of concept.",
+  "description": "An AI-generated trailer created in 2025 for BINGO, a proposed TV series developed as a pitch and proof of concept.\n\nSet in the 1980s, the trailer establishes the series’ visual world through period-specific styling, wardrobe, environments, and cinematic direction.\n\nI developed the trailer end-to-end, including concept development, creative direction, AI production, editing, post-production, and final delivery.\n\nCreated during an early stage of generative AI video production, the project demonstrates how AI could be used to visualize and pitch a series concept before full production.",
+  "videos": [
+    {
+      "title": "Bingo Trailer",
+      "youtube": "https://youtu.be/rbOsIEghkCw",
+      "format": "landscape"
+    }
+  ],
+  "stills": [],
+  "press": []
+}

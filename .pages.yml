@@ -1,0 +1,70 @@
+media:
+  input: public/media
+  output: /media
+  extensions: [jpg, jpeg, png, webp, avif]
+content:
+  - name: projects
+    label: Projects
+    type: collection
+    path: content/projects
+    format: json
+    filename: "{primary}.json"
+    view:
+      primary: title
+      fields: [title, category, order, published]
+      sort: order
+      order: asc
+    fields:
+      - { name: title, label: Project title, type: string, required: true }
+      - { name: slug, label: Unique name, type: string, required: true, description: "Lowercase words with hyphens, e.g. house-of-saffron." }
+      - { name: order, label: Display order, type: number, required: true }
+      - { name: published, label: Show on website, type: boolean, default: false }
+      - name: videos
+        label: Project videos
+        type: object
+        list: true
+        fields:
+          - { name: title, type: string, required: true }
+          - { name: youtube, label: YouTube link, type: string, required: true }
+          - { name: format, type: select, options: [landscape, vertical], default: landscape }
+      - { name: poster, label: Project cover, type: image, required: true }
+      - { name: category, label: Category, type: string }
+      - { name: year, label: Year, type: string }
+      - { name: role, label: Your role, type: string }
+      - { name: credit, label: Production or context, type: string }
+      - { name: summary, label: Short introduction, type: text }
+      - { name: description, label: Full story, type: text }
+      - name: stills
+        label: Stills and behind the scenes
+        type: object
+        list: true
+        fields:
+          - { name: image, label: Image, type: image, required: true }
+          - { name: caption, label: Caption, type: string }
+          - { name: kind, type: select, options: [event, press], default: event }
+      - name: press
+        label: Press and features
+        type: object
+        list: true
+        fields:
+          - { name: title, label: Article title, type: string, required: true }
+          - { name: publication, label: Publication, type: string }
+          - { name: url, label: Article link, type: string, required: true }
+  - name: about
+    label: About and contact
+    type: file
+    path: content/profile.json
+    format: json
+    fields:
+      - { name: name, type: string }
+      - { name: email, label: Contact email, type: string }
+      - { name: location, type: string }
+      - { name: portrait, type: image }
+      - { name: biography, type: text }
+      - { name: philosophy, label: Creative approach, type: text }
+      - name: social
+        type: object
+        list: true
+        fields:
+          - { name: label, type: string }
+          - { name: url, type: string }

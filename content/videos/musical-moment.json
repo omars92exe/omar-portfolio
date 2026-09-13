@@ -1,0 +1,16 @@
+{
+  "slug": "musical-moment",
+  "title": "A Musical Moment",
+  "order": 10,
+  "published": true,
+  "youtube": "https://www.youtube.com/watch?v=IO1OL8VCdBo",
+  "poster": "/media/oud.jpg",
+  "category": "Music",
+  "year": "",
+  "role": "Musician",
+  "credit": "Personal work",
+  "summary": "A moment to listen.",
+  "description": "A musical entry from my personal archive.",
+  "stills": [],
+  "press": []
+}

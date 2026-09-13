@@ -1,0 +1,40 @@
+{
+  "name": "Omar Alothman",
+  "email": "omar@omaralothman.net",
+  "location": "Dubai, UAE",
+  "biography": "I’m Omar, a filmmaker, art director and artist based in Dubai. I work across film and AI-assisted visuals, shaping ideas from the first concept through to the final frame.",
+  "philosophy": "My work explores culture, memory and contemporary visual language. I’m interested in how an image feels, how a sequence moves, and what stays with you after it ends.",
+  "portrait": "/media/omar-portrait.png",
+  "social": [
+    {
+      "label": "Instagram",
+      "url": "https://www.instagram.com/omars.exe/"
+    },
+    {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/omar-alothman/"
+    }
+  ],
+  "experience": [
+    {
+      "role": "Art Director",
+      "company": "Rabdan Developments",
+      "date": "2026 — Present"
+    },
+    {
+      "role": "Media Specialist / Photographer",
+      "company": "The Creator Space",
+      "date": "2024 — 2026"
+    },
+    {
+      "role": "Content Creator",
+      "company": "ZeFi",
+      "date": "2020 — 2023"
+    },
+    {
+      "role": "Independent Filmmaker",
+      "company": "Freelance",
+      "date": "2019 — Present"
+    }
+  ]
+}
