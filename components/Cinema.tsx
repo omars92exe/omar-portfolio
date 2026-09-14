@@ -72,7 +72,7 @@ export default function Cinema({films}:{films:Film[]}) {
      const sx=Math.sin(yaw)*Math.cos(pitch),sy=-Math.sin(pitch),sz=Math.cos(yaw)*Math.cos(pitch);
      const depth=(sz+1)/2,perspectiveScale=1/(1-sz*.20);
      const radius=Math.min(viewportW*(mobile?.37:.30),viewportH*(mobile?.5:.43));
-     const ox=viewportW*.5+sx*radius*perspectiveScale*.96,oy=viewportH*(mobile?.498:.47)+sy*viewportH*(mobile?.24:.30)*perspectiveScale*.96;
+     const ox=viewportW*.5+sx*radius*perspectiveScale*.96,oy=viewportH*(mobile?.498:.47)+sy*viewportH*(mobile?.24:.30)*perspectiveScale*.96-(latitude<0?viewportH*.11:0);
      const surfaceYaw=longitude>90?180-longitude:longitude< -90?-180-longitude:longitude;
      const gx=cx+Math.sin(d*.65)*viewportW*.18,gy=cy+d*viewportH*(mobile?.76:.56);
      const scale=lerp(overviewWidth/focalWidth*lerp(.72,1.06,depth),Math.max(.5,1-Math.abs(d)*.14),zoom);
