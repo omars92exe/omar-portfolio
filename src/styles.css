@@ -33,7 +33,7 @@
 /* A world of projects around Omar; all layers share the existing scroll timeline. */
 .world-character{position:absolute;left:50%;top:62%;width:min(19vw,27svh);aspect-ratio:831/1060;transform:translate3d(-50%,-50%,0);z-index:125;pointer-events:none;will-change:transform,opacity}
 .character-crop{position:absolute;inset:0;overflow:hidden;mix-blend-mode:screen;mask-image:linear-gradient(to bottom,#000 86%,transparent 100%);animation:character-reveal 1.6s ease both}
-.character-crop img{position:absolute;max-width:none;width:150.9025%;height:auto;left:-28.7605%;top:-9.2453%}
+.character-crop img,.character-crop video{position:absolute;max-width:none;width:150.9025%;height:auto;left:-28.7605%;top:-9.2453%}
 .world-halo{position:absolute;inset:2% -40% -6%;background:radial-gradient(ellipse at 50% 50%,#b2c5df19, #b48d8510 36%,transparent 68%);filter:blur(28px);animation:world-breathe 7s ease-in-out infinite}
 .cinema:not(.is-ready) .world-character{visibility:hidden}.is-ready .character-crop{animation-delay:.3s}
 .film-plane:before{content:'';position:absolute;inset:-12%;background:radial-gradient(ellipse,#cad7ee99 18%,#cad7ee40 46%,transparent 74%);opacity:var(--world-glow,0);filter:blur(22px);pointer-events:none}
@@ -74,3 +74,7 @@
  .film-plane:hover{--hover-approach:1}
  .film-plane:hover .cover-window img{transform:scale(1.015)}
 }
+
+.character-video{opacity:0;transition:opacity .35s ease;pointer-events:none}.character-video.is-playing{opacity:1}
+.world-character{mix-blend-mode:screen}
+.world-character{background:#080808}

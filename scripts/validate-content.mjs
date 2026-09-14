@@ -25,5 +25,5 @@ for(const file of files){
 }
 if(!live)throw Error('Publish at least one film.');
 const profile=JSON.parse(fs.readFileSync('content/profile.json','utf8'));localImage(profile.portrait,'About portrait');
-if(fs.readdirSync('public/media').some(f=>/\.(mp4|mov|webm)$/i.test(f)))throw Error('Video playback must use YouTube. Move local video files out of public/media.');
+if(fs.readdirSync('public/media').some(f=>/\.(mp4|mov|webm)$/i.test(f)&&f!=='omar-character.mp4'))throw Error('Project videos must use YouTube; only the decorative character loop may be hosted locally.');
 console.log(`Validated ${live} published projects, detail images, press links and About content.`);
