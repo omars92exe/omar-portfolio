@@ -59,3 +59,18 @@
 .project-video.vertical .detail-poster{overflow:hidden;aspect-ratio:9/16}
 .project-video.vertical .detail-poster img{object-fit:cover;object-position:center}
 @media(max-width:759px){.about-grid figure{width:80%;margin-inline:auto}}
+
+/* A small pointer response on the inner cover preserves the scene's fixed layers. */
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+ .film-plane .cover-window{transform:perspective(800px) translate3d(calc(var(--hover-x,0)*1.5px),calc(var(--hover-y,0)*1.5px),0) rotateX(calc(var(--hover-y,0)*-2.5deg)) rotateY(calc(var(--hover-x,0)*2.5deg));transition:transform .35s cubic-bezier(.22,1,.36,1)}
+}
+
+/* Bring the entire floating plane toward the viewer without changing its layer. */
+@property --hover-approach{syntax:'<number>';inherits:false;initial-value:0}
+@property --hover-x{syntax:'<number>';inherits:true;initial-value:0}
+@property --hover-y{syntax:'<number>';inherits:true;initial-value:0}
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+ .film-plane{--hover-approach:0;transition:--hover-approach .4s cubic-bezier(.22,1,.36,1),--hover-x .3s ease-out,--hover-y .3s ease-out}
+ .film-plane:hover{--hover-approach:1}
+ .film-plane:hover .cover-window img{transform:scale(1.015)}
+}

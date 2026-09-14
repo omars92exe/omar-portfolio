@@ -1,5 +1,5 @@
 import { ArrowUp, ArrowDown, ArrowUpRight } from 'lucide-react';
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import type { Film } from '@/lib/films';
 import ProjectDetails from './ProjectDetails';
@@ -81,7 +81,7 @@ export default function Cinema({films}:{films:Film[]}) {
      const angle=lerp(tilt+(reduced.matches?0:Math.sin(drift+i)*3),clamp(d*10,-24,24),zoom);
      const opacity=lerp(1,1-smooth((Math.abs(d)-.65)/1.2),zoom);
      el.style.width=`${focalWidth}px`;el.style.height=`${focalHeight}px`;
-     el.style.transform=`translate3d(${lerp(ox,gx,zoom)-focalWidth/2}px,${lerp(oy,gy,zoom)-focalHeight/2}px,0) perspective(1200px) rotateX(${lerp(latitude*.86,clamp(d*14,-30,30),zoom)}deg) rotateY(${lerp(-surfaceYaw*.88,clamp(d*-10,-20,20),zoom)}deg) rotate(${angle}deg) scale(${scale})`;
+     el.style.transform=`translate3d(${lerp(ox,gx,zoom)-focalWidth/2}px,${lerp(oy,gy,zoom)-focalHeight/2}px,0) perspective(1200px) translate3d(calc(var(--hover-x,0)*12px),calc(var(--hover-y,0)*10px),calc(var(--hover-approach,0)*110px)) rotateX(calc(var(--hover-y,0)*-5deg)) rotateY(calc(var(--hover-x,0)*6deg)) rotateX(${lerp(latitude*.86,clamp(d*14,-30,30),zoom)}deg) rotateY(${lerp(-surfaceYaw*.88,clamp(d*-10,-20,20),zoom)}deg) rotate(${angle}deg) scale(${scale})`;
      el.style.setProperty('--world-glow',String((1-zoom)*(.24+depth*.28)));
      el.style.opacity=String(opacity*lerp(.72+depth*.28,1,zoom));el.style.filter=`blur(${(1-zoom)*(1-depth)*1.1}px)`;el.style.setProperty('--edge-softness',`${lerp(2.8,.6,zoom)}%`);el.style.zIndex=String(zoom<.2?100+Math.round(restingDepth*40):150-Math.round(Math.abs(d)*10));
      const interactive=zoom<.2||Math.abs(d)<.5;el.style.pointerEvents=interactive?'auto':'none';el.tabIndex=interactive?0:-1;el.setAttribute('aria-hidden',String(!interactive));
@@ -104,6 +104,16 @@ export default function Cinema({films}:{films:Film[]}) {
   return()=>{cancelAnimationFrame(raf);window.removeEventListener('cinema-wake',wake);window.removeEventListener('scroll',wake);window.removeEventListener('resize',updateSize);window.removeEventListener('resize',wake);reduced.removeEventListener('change',wake);document.removeEventListener('visibilitychange',onVisibility)};
  },[films]);
  function go(index:number){const top=index<0?0:(1.25+clamp(index,0,films.length-1)*.9)*(scene.current?.clientHeight||window.innerHeight);window.scrollTo({top,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}
+ function resetCoverTilt(element:HTMLButtonElement){
+  element.style.setProperty('--hover-x','0');element.style.setProperty('--hover-y','0');
+ }
+ function tiltCover(event:PointerEvent<HTMLButtonElement>){
+  if(event.pointerType!=='mouse'||!window.matchMedia('(hover: hover) and (pointer: fine)').matches||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const element=event.currentTarget,rect=element.getBoundingClientRect();
+  if(!rect.width||!rect.height)return;
+  element.style.setProperty('--hover-x',String(clamp((event.clientX-rect.left)/rect.width*2-1,-1,1)));
+  element.style.setProperty('--hover-y',String(clamp((event.clientY-rect.top)/rect.height*2-1,-1,1)));
+ }
  function openFilm(film:Film){setSelected(film)}
  const film=films[Math.max(0,active)];
  return <>
@@ -116,7 +126,7 @@ export default function Cinema({films}:{films:Film[]}) {
  <div className="cinema-scene" ref={scene}>
  <div className="overview-copy" ref={intro} inert={active>=0}><div className="overview-heading"><h1>Projects.</h1><span>A selection by Omar Alothman</span></div><div className="overview-bottom"><span>{pad(films.length)} projects<br/>A collection in motion</span><button onClick={()=>go(0)}>Scroll to explore <span className="scroll-line"/></button><span>Film. Feeling.<br/>A different perspective.</span></div></div>
  <div className="film-space"><div className="world-character" ref={character} aria-hidden="true"><div className="world-halo"/><div className="character-crop"><img src="/media/omar-world.png" alt="" fetchPriority="high"/></div></div>
- {films.map((f,i)=><button ref={el=>{cards.current[i]=el}} key={f.slug} className="film-plane" style={{'--entry-delay':`${i*.045}s`} as CSSProperties} onClick={()=>openFilm(f)} aria-label={`Open ${f.title}`}><span className="cover-window"><img src={f.poster} alt={f.title} fetchPriority={i<2?'high':'auto'}/></span><span className="plane-label"><span>{pad(i+1)}</span><span className="plane-name">{f.title}</span></span><span className="plane-play" aria-hidden="true"><ArrowUpRight/></span></button>)}</div>
+ {films.map((f,i)=><button ref={el=>{cards.current[i]=el}} key={f.slug} className="film-plane" onPointerEnter={tiltCover} onPointerMove={tiltCover} onPointerLeave={event=>resetCoverTilt(event.currentTarget)} onPointerCancel={event=>resetCoverTilt(event.currentTarget)} onBlur={event=>resetCoverTilt(event.currentTarget)} style={{'--entry-delay':`${i*.045}s`} as CSSProperties} onClick={event=>{resetCoverTilt(event.currentTarget);openFilm(f)}} aria-label={`Open ${f.title}`}><span className="cover-window"><img src={f.poster} alt={f.title} fetchPriority={i<2?'high':'auto'}/></span><span className="plane-label"><span>{pad(i+1)}</span><span className="plane-name">{f.title}</span></span><span className="plane-play" aria-hidden="true"><ArrowUpRight/></span></button>)}</div>
  <div className="film-information" ref={details} aria-hidden={active<0}><div className="film-role"><span className="eyebrow">Role</span><p>{film?.role}</p><span className="eyebrow">{film?.year?'Year':'Type'}</span><p>{film?.year||film?.category}</p></div>{films.map((f,i)=><div className="film-title project-caption" key={f.slug} ref={el=>{captions.current[i]=el}}><span className="eyebrow">{f.category}</span><h2>{f.title}</h2><button className="underlined" tabIndex={active===i?0:-1} onClick={()=>openFilm(f)}>View project <ArrowUpRight className="ui-icon" aria-hidden="true"/></button></div>)}</div>
  <div className="film-counter" ref={counter}><span className="eyebrow">Selected project</span><span className="counter-number">{pad(Math.max(0,active)+1)}</span><span className="counter-total">/{pad(films.length)}</span></div>
  <div className="scene-bottom"><button onClick={()=>go(-1)}>Overview</button><div className="scene-progress">{films.map((f,i)=><button key={f.slug} onClick={()=>go(i)} aria-label={`Go to ${f.title}`} aria-current={i===active?'true':undefined}><span/></button>)}</div><div className="scene-arrows"><button disabled={active<0} aria-label="Previous project" onClick={()=>go(active-1)}><ArrowUp aria-hidden="true"/></button><button disabled={active===films.length-1} aria-label="Next project" onClick={()=>go(active+1)}><ArrowDown aria-hidden="true"/></button></div></div>
