@@ -66,7 +66,9 @@ export default function Cinema({films}:{films:Film[]}) {
     films.forEach((film,i)=>{
      const el=cards.current[i];if(!el)return;
      const d=i-position,[longitude,latitude,tilt]=sphere[i%sphere.length];
-     const drift=reduced.matches?0:time*.00025;
+     // Floating changes position, but never changes which cover is in front.
+     const restingDepth=(Math.cos(longitude*Math.PI/180)*Math.cos(latitude*Math.PI/180)+1)/2;
+     const drift=reduced.matches?0:time*.00030;
      const yaw=(longitude+(reduced.matches?0:Math.sin(drift+i)*2))*Math.PI/180;
      const pitch=(latitude+(reduced.matches?0:Math.cos(drift*.8+i*1.7)*2))*Math.PI/180;
      const sx=Math.sin(yaw)*Math.cos(pitch),sy=-Math.sin(pitch),sz=Math.cos(yaw)*Math.cos(pitch);
@@ -81,7 +83,7 @@ export default function Cinema({films}:{films:Film[]}) {
      el.style.width=`${focalWidth}px`;el.style.height=`${focalHeight}px`;
      el.style.transform=`translate3d(${lerp(ox,gx,zoom)-focalWidth/2}px,${lerp(oy,gy,zoom)-focalHeight/2}px,0) perspective(1200px) rotateX(${lerp(latitude*.86,clamp(d*14,-30,30),zoom)}deg) rotateY(${lerp(-surfaceYaw*.88,clamp(d*-10,-20,20),zoom)}deg) rotate(${angle}deg) scale(${scale})`;
      el.style.setProperty('--world-glow',String((1-zoom)*(.24+depth*.28)));
-     el.style.opacity=String(opacity*lerp(.72+depth*.28,1,zoom));el.style.filter=`blur(${(1-zoom)*(1-depth)*1.1}px)`;el.style.setProperty('--edge-softness',`${lerp(2.8,.6,zoom)}%`);el.style.zIndex=String(zoom<.2?100+Math.round(depth*40):150-Math.round(Math.abs(d)*10));
+     el.style.opacity=String(opacity*lerp(.72+depth*.28,1,zoom));el.style.filter=`blur(${(1-zoom)*(1-depth)*1.1}px)`;el.style.setProperty('--edge-softness',`${lerp(2.8,.6,zoom)}%`);el.style.zIndex=String(zoom<.2?100+Math.round(restingDepth*40):150-Math.round(Math.abs(d)*10));
      const interactive=zoom<.2||Math.abs(d)<.5;el.style.pointerEvents=interactive?'auto':'none';el.tabIndex=interactive?0:-1;el.setAttribute('aria-hidden',String(!interactive));
      el.style.setProperty('--caption-opacity',String(0));el.style.setProperty('--overview-scale',String(overviewWidth/focalWidth));
     });
