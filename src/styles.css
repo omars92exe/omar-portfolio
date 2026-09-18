@@ -102,3 +102,14 @@
 .is-project-view .film-plane{--hover-approach:0!important;--hover-x:0!important;--hover-y:0!important}
 .is-project-view .film-plane .cover-window{transform:none;transition:none}
 .is-project-view .film-plane:hover .cover-window img{transform:none}
+
+.photo-backdrop{z-index:70!important;background:#0009}
+
+/* Quiet photo lightbox with touch-driven navigation. */
+.photo-viewer{width:min(1250px,94vw)!important;height:92svh!important;max-height:92svh!important;padding:20px 24px!important;border-radius:18px!important;background:#0c0c0c!important;gap:16px;box-shadow:0 24px 100px #0009}
+.photo-toolbar{flex-shrink:0;align-items:center;gap:16px}.photo-back{display:flex;align-items:center;gap:8px;border:0;padding:10px 0;color:#ddd;font-size:12px}.photo-project-name{color:#777;font-size:12px;margin-left:auto}.photo-dismiss{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#ffffff0a}
+.photo-stage{position:relative;flex:1;min-height:0;overflow:hidden;touch-action:pan-y pinch-zoom;user-select:none}.photo-drag{position:absolute;inset:0}.photo-stage .photo-full{width:100%;height:100%;object-fit:contain;border-radius:4px}.photo-enter-next{animation:photo-next .3s ease both}.photo-enter-previous{animation:photo-previous .3s ease both}
+@keyframes photo-next{from{opacity:.3;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}@keyframes photo-previous{from{opacity:.3;transform:translateX(-24px)}to{opacity:1;transform:translateX(0)}}
+.photo-footer{flex-shrink:0;text-align:center}.photo-caption{font-size:12px;line-height:1.5;color:#aaa;margin:0 0 12px}.photo-controls{justify-content:center;gap:26px;padding:0}.photo-controls button{display:grid;place-items:center;border:1px solid #ffffff24;border-radius:50%;width:42px;height:42px;padding:0;transition:background .2s}.photo-controls button:hover:not(:disabled){background:#ffffff12}.photo-controls button:disabled{opacity:.2}.photo-count{font-size:12px;font-variant-numeric:tabular-nums;letter-spacing:.04em}.photo-count span{color:#666}.photo-dots{display:flex;justify-content:center;flex-wrap:wrap;margin-top:8px}.photo-dots button{width:24px;height:24px;padding:8px}.photo-dots span{display:block;width:5px;height:5px;border-radius:50%;background:#444;transition:background .2s,transform .2s}.photo-dots [aria-current=true] span{background:#eee;transform:scale(1.25)}.photo-swipe-hint{display:none;font-size:10px;letter-spacing:.05em;color:#666}
+@media(max-width:759px){.photo-viewer{width:94vw!important;padding:12px!important;border-radius:14px!important;gap:10px}.photo-project-name{display:none}.photo-dismiss{margin-left:auto}.photo-caption{font-size:11px;margin-bottom:10px}.photo-swipe-hint{display:block;margin-top:3px}.photo-stage{min-height:140px}}
+@media(prefers-reduced-motion:reduce){.photo-enter-next,.photo-enter-previous{animation:none}.photo-drag{transition:none!important}}
