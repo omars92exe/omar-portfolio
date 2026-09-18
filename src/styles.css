@@ -78,3 +78,27 @@
 .character-video{opacity:0;transition:opacity .35s ease;pointer-events:none}.character-video.is-playing{opacity:1}
 .world-character{mix-blend-mode:screen}
 .world-character{background:#080808}
+
+/* Edge-to-edge matte plates; depth sits behind the image, never around it. */
+.film-plane:before{display:none}
+.film-plane .cover-window{
+ border-radius:22px;
+ overflow:hidden;
+ padding:0;
+ background:#101114;
+ mask-image:none;
+ -webkit-mask-image:none;
+ box-shadow:1px 2px 0 #1b1c20,2px 4px 0 #101114,3px 6px 0 #0b0c0e,5px 12px 22px #0008;
+}
+.film-plane .cover-window img{
+ border-radius:inherit;
+ mask-image:none;
+ -webkit-mask-image:none;
+ filter:none;
+}
+.film-plane .cover-window:after{display:none}
+.film-plane:hover .cover-window img,.film-plane:focus-visible .cover-window img{filter:none}
+
+.is-project-view .film-plane{--hover-approach:0!important;--hover-x:0!important;--hover-y:0!important}
+.is-project-view .film-plane .cover-window{transform:none;transition:none}
+.is-project-view .film-plane:hover .cover-window img{transform:none}

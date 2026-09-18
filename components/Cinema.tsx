@@ -60,7 +60,7 @@ export default function Cinema({films}:{films:Film[]}) {
     const zoom=smooth(current/1.25),position=Math.max(0,(current-1.25)/.9),mobile=viewportW<760;
     const focalWidth=Math.min(mobile?Math.min(viewportW*.82,viewportH*.52):viewportW*.36,620),focalHeight=focalWidth*.68;
     const cx=viewportW*(mobile?.5:.56),cy=viewportH*(mobile?.39:.49);
-    const overviewWidth=Math.min(viewportW*(mobile?.25:.14),viewportH*.19);
+    const overviewWidth=Math.min(viewportW*(mobile?.25:.14),viewportH*.19)*.9;
     // Cards lie tangent to a sphere, with an open lower centre for the character.
     // Longitude, latitude and a small independent roll keep the globe irregular.
     const sphere=[[-68,19,-12],[-36,51,8],[6,70,-8],[46,43,13],[76,9,-9],[66,-30,7],[-69,-27,-11],[-145,17,5],[145,28,-8],[-18,29,12],[29,13,-6],[-62,-49,8],[63,-46,-12]];
@@ -84,17 +84,23 @@ export default function Cinema({films}:{films:Film[]}) {
      el.style.width=`${focalWidth}px`;el.style.height=`${focalHeight}px`;
      el.style.transform=`translate3d(${lerp(ox,gx,zoom)-focalWidth/2}px,${lerp(oy,gy,zoom)-focalHeight/2}px,0) perspective(1200px) translate3d(calc(var(--hover-x,0)*12px),calc(var(--hover-y,0)*10px),calc(var(--hover-approach,0)*110px)) rotateX(calc(var(--hover-y,0)*-5deg)) rotateY(calc(var(--hover-x,0)*6deg)) rotateX(${lerp(latitude*.86,clamp(d*14,-30,30),zoom)}deg) rotateY(${lerp(-surfaceYaw*.88,clamp(d*-10,-20,20),zoom)}deg) rotate(${angle}deg) scale(${scale})`;
      el.style.setProperty('--world-glow',String((1-zoom)*(.24+depth*.28)));
-     el.style.opacity=String(opacity*lerp(.72+depth*.28,1,zoom));el.style.filter=`blur(${(1-zoom)*(1-depth)*1.1}px)`;el.style.setProperty('--edge-softness',`${lerp(2.8,.6,zoom)}%`);el.style.zIndex=String(zoom<.2?100+Math.round(restingDepth*40):150-Math.round(Math.abs(d)*10));
+     el.style.opacity=String(opacity*lerp(.72+depth*.28,1,zoom));el.style.filter='none';el.style.zIndex=String(zoom<.2?100+Math.round(restingDepth*40):150-Math.round(Math.abs(d)*10));
      const interactive=zoom<.2||Math.abs(d)<.5;el.style.pointerEvents=interactive?'auto':'none';el.tabIndex=interactive?0:-1;el.setAttribute('aria-hidden',String(!interactive));
      el.style.setProperty('--caption-opacity',String(0));el.style.setProperty('--overview-scale',String(overviewWidth/focalWidth));
     });
     if(character.current){character.current.style.transform=`translate3d(-50%,calc(-50% - ${zoom*viewportH*.85}px),0) scale(${1-zoom*.18})`;character.current.style.opacity=String(1-smooth(zoom/.7));}
     if(intro.current){intro.current.style.opacity=String(1-smooth(current/.6));intro.current.style.transform=`translate3d(0,${-current*25}px,0)`;intro.current.style.pointerEvents=current<.3?'auto':'none';}
     scene.current.style.setProperty('--project-progress',String(zoom));
+    scene.current.classList.toggle('is-project-view',current>.05);
     const ui=smooth((zoom-.7)/.3);
     if(details.current){details.current.style.opacity=String(ui);details.current.style.transform=`translate3d(0,${(1-ui)*15}px,0)`;details.current.style.pointerEvents='none';}
     captions.current.forEach((el,i)=>{if(!el)return;const distance=i-position,near=Math.abs(distance);el.style.transform=`translate3d(0,${distance*viewportH*(mobile?.04:.22)}px,0)`;el.style.filter=`blur(${reduced.matches?0:Math.min(6,near*5)}px)`;el.style.opacity=String(mobile?(near<.5?1:0):Math.max(0,1-near*.68));el.inert=near>=.5;el.setAttribute('aria-hidden',String(near>=.5));});
-    if(counter.current)counter.current.style.opacity=String(ui);
+    if(counter.current){
+     counter.current.style.opacity=String(ui);
+     const number=counter.current.querySelector<HTMLElement>('.counter-number');
+     const distance=Math.abs(position-Math.round(position));
+     if(number)number.style.filter=`blur(${reduced.matches?0:6*smooth(Math.max(0,distance-.008)/.32)}px)`;
+    }
     if(brand.current){const turn=mobile?0:zoom;brand.current.style.transform=`translate3d(${mobile?20:28}px,${lerp(25,mobile?25:245,turn)}px,0) rotate(${-90*turn}deg) scale(${lerp(1,mobile?.9:.77,zoom)})`;brand.current.style.setProperty('--brand-spread',`${lerp(0,3,zoom)}px`);}
     const next=zoom<.8?-1:Math.min(films.length-1,Math.round(position));if(next!==activeRef.current){activeRef.current=next;setActive(next)}
     dirty=false;
@@ -110,6 +116,7 @@ export default function Cinema({films}:{films:Film[]}) {
  }
  function tiltCover(event:PointerEvent<HTMLButtonElement>){
   if(event.pointerType!=='mouse'||!window.matchMedia('(hover: hover) and (pointer: fine)').matches||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  if(activeRef.current>=0){resetCoverTilt(event.currentTarget);return}
   const element=event.currentTarget,rect=element.getBoundingClientRect();
   if(!rect.width||!rect.height)return;
   element.style.setProperty('--hover-x',String(clamp((event.clientX-rect.left)/rect.width*2-1,-1,1)));
@@ -123,7 +130,7 @@ export default function Cinema({films}:{films:Film[]}) {
  <a className="skip-link" href="#film-list">Skip animation / Browse projects</a>
  <button onClick={()=>go(-1)} ref={brand} className="brand" aria-label="Omar Alothman — all projects"><span>OMAR</span><span>ALOTHMAN</span></button>
  <header className="site-header"><span className="header-location">Filmmaker & art director<br/>{profile.location}</span><nav aria-label="Main navigation"><button onClick={()=>go(-1)}>Projects</button><Link to="/about">About</Link><a href="#contact">Contact</a></nav></header>
- <section className="cinema-runway" ref={runway} style={{height:`${100+125+Math.max(0,films.length-1)*90}svh`}} aria-label="Project collection">
+ <section className="cinema-runway" ref={runway} style={{height:`calc(max(100svh, 500px) * ${2.25+Math.max(0,films.length-1)*.9})`}} aria-label="Project collection">
  <div className="cinema-scene" ref={scene}>
  <div className="overview-copy" ref={intro} inert={active>=0}><div className="overview-heading"><h1>Projects.</h1><span>A selection by Omar Alothman</span></div><div className="overview-bottom"><span>{pad(films.length)} projects<br/>A collection in motion</span><button onClick={()=>go(0)}>Scroll to explore <span className="scroll-line"/></button><span>Film. Feeling.<br/>A different perspective.</span></div></div>
  <div className="film-space"><div className="world-character" ref={character} aria-hidden="true"><div className="world-halo"/><CharacterMotion active={loaded && active<0 && !selected}/></div>
