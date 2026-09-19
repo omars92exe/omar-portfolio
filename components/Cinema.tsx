@@ -83,7 +83,10 @@ export default function Cinema({films}:{films:Film[]}) {
      const opacity=lerp(1,1-smooth((Math.abs(d)-.65)/1.2),zoom);
      el.style.width=`${focalWidth}px`;el.style.height=`${focalHeight}px`;
      el.style.transform=`translate3d(${lerp(ox,gx,zoom)-focalWidth/2}px,${lerp(oy,gy,zoom)-focalHeight/2}px,0) perspective(1200px) translate3d(calc(var(--hover-x,0)*12px),calc(var(--hover-y,0)*10px),calc(var(--hover-approach,0)*110px)) rotateX(calc(var(--hover-y,0)*-5deg)) rotateY(calc(var(--hover-x,0)*6deg)) rotateX(${lerp(latitude*.86,clamp(d*14,-30,30),zoom)}deg) rotateY(${lerp(-surfaceYaw*.88,clamp(d*-10,-20,20),zoom)}deg) rotate(${angle}deg) scale(${scale})`;
-     el.style.setProperty('--world-glow',String((1-zoom)*(.24+depth*.28)));
+     el.style.setProperty('--world-glow',String((1-zoom)*(.18+depth*.12)));
+     el.style.setProperty('--dream-contrast',String(lerp(.93,1,zoom)));
+     el.style.setProperty('--dream-saturation',String(lerp(.94,1,zoom)));
+     el.style.setProperty('--dream-softness',`${(1-zoom)*(1-depth)*.7}px`);
      el.style.opacity=String(opacity*lerp(.72+depth*.28,1,zoom));el.style.filter='none';el.style.zIndex=String(zoom<.2?100+Math.round(restingDepth*40):150-Math.round(Math.abs(d)*10));
      const interactive=zoom<.2||Math.abs(d)<.5;el.style.pointerEvents=interactive?'auto':'none';el.tabIndex=interactive?0:-1;el.setAttribute('aria-hidden',String(!interactive));
      el.style.setProperty('--caption-opacity',String(0));el.style.setProperty('--overview-scale',String(overviewWidth/focalWidth));
