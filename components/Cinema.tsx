@@ -14,7 +14,6 @@ const mobilePoster=(poster:string)=>poster.replace(/\.[^.]+$/, '-mobile.jpg');
 const pad=(n:number)=>String(n).padStart(2,'0');
 export default function Cinema({films}:{films:Film[]}) {
  const [introComplete,setIntroComplete]=useState(false);
- const mobileSnapping=useRef(false);
  const entranceStart=useRef<number|null>(null);
  const loaderWord=useRef<HTMLDivElement>(null);
  const [loaded,setLoaded]=useState(false),[progress,setProgress]=useState(0),[active,setActive]=useState(-1),[selected,setSelected]=useState<Film|null>(null);
@@ -63,7 +62,7 @@ export default function Cinema({films}:{films:Film[]}) {
    raf=0;if(!runway.current||!scene.current)return;
    const target=clamp((window.scrollY-runway.current.offsetTop)/viewportH,0,1.25+Math.max(0,films.length-1)*.9);
    const dt=Math.min(64,time-last||16.7);last=time;
-   current=reduced.matches||mobileSnapping.current?target:lerp(current,target,1-Math.exp(-dt/110));
+   current=reduced.matches?target:lerp(current,target,1-Math.exp(-dt/110));
    if(Math.abs(target-current)<.0001)current=target;
    const floating=entranceStart.current!==null&&current<1.25&&!reduced.matches&&!modalOpen.current;
    if(dirty||current!==target||floating){
@@ -134,45 +133,6 @@ export default function Cinema({films}:{films:Film[]}) {
   window.addEventListener('cinema-wake',wake);window.addEventListener('scroll',wake,{passive:true});window.addEventListener('resize',updateSize);window.addEventListener('resize',wake);reduced.addEventListener('change',wake);document.addEventListener('visibilitychange',onVisibility);wake();
   return()=>{cancelAnimationFrame(raf);window.removeEventListener('cinema-wake',wake);window.removeEventListener('scroll',wake);window.removeEventListener('resize',updateSize);window.removeEventListener('resize',wake);reduced.removeEventListener('change',wake);document.removeEventListener('visibilitychange',onVisibility)};
  },[films]);
- // On phones, settle after touch momentum finishes; desktop stays continuous.
- useEffect(()=>{
-  if(!loaded||selected)return;
-  const mobile=window.matchMedia('(max-width: 759px)');
-  let timer=0,frame=0,touching=false;
-  const cancel=()=>{clearTimeout(timer);cancelAnimationFrame(frame);frame=0;mobileSnapping.current=false;};
-  const settle=()=>{
-   if(!mobile.matches||touching||document.hidden||!scene.current||!runway.current)return;
-   const height=scene.current.clientHeight,origin=runway.current.offsetTop;
-   const position=(window.scrollY-origin)/height,lastStop=1.25+(films.length-1)*.9;
-   if(position<=.02||position>lastStop+.04)return;
-   const stopPosition=position<.625?0:1.25+Math.round(Math.max(0,position-1.25)/.9)*.9;
-   const destination=origin+stopPosition*height,from=window.scrollY;
-   if(Math.abs(destination-from)<1)return;
-   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){window.scrollTo({top:destination,behavior:'instant'});return;}
-   const start=performance.now(),duration=260+Math.min(100,Math.abs(destination-from)*.15);
-   mobileSnapping.current=true;
-   const animate=(now:number)=>{
-    const t=clamp((now-start)/duration);
-    window.scrollTo({top:lerp(from,destination,1-Math.pow(1-t,3)),behavior:'instant'});
-    window.dispatchEvent(new Event('cinema-wake'));
-    if(t<1)frame=requestAnimationFrame(animate);
-    else{frame=0;mobileSnapping.current=false;}
-   };
-   frame=requestAnimationFrame(animate);
-  };
-  const schedule=()=>{if(!mobile.matches||mobileSnapping.current||touching)return;clearTimeout(timer);timer=window.setTimeout(settle,110);};
-  const beginTouch=()=>{touching=true;cancel();};
-  const endTouch=()=>{touching=false;schedule();};
-  window.addEventListener('scroll',schedule,{passive:true});
-  window.addEventListener('touchstart',beginTouch,{passive:true});
-  window.addEventListener('touchend',endTouch,{passive:true});
-  window.addEventListener('touchcancel',endTouch,{passive:true});
-  window.addEventListener('pointerdown',cancel,{passive:true});
-  window.addEventListener('wheel',cancel,{passive:true});
-  window.addEventListener('resize',cancel);
-  document.addEventListener('visibilitychange',cancel);
-  return()=>{cancel();window.removeEventListener('scroll',schedule);window.removeEventListener('touchstart',beginTouch);window.removeEventListener('touchend',endTouch);window.removeEventListener('touchcancel',endTouch);window.removeEventListener('pointerdown',cancel);window.removeEventListener('wheel',cancel);window.removeEventListener('resize',cancel);document.removeEventListener('visibilitychange',cancel);};
- },[loaded,selected,films.length]);
  function go(index:number){const top=index<0?0:(1.25+clamp(index,0,films.length-1)*.9)*(scene.current?.clientHeight||window.innerHeight);window.scrollTo({top,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}
  function resetCoverTilt(element:HTMLButtonElement){
   element.style.setProperty('--hover-x','0');element.style.setProperty('--hover-y','0');
