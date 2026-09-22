@@ -10,9 +10,12 @@ import SocialLinks from './SocialLinks';
 const clamp=(n:number,min=0,max=1)=>Math.max(min,Math.min(max,n));
 const lerp=(a:number,b:number,t:number)=>a+(b-a)*t;
 const smooth=(n:number)=>{const t=clamp(n);return t*t*(3-2*t)};
+const mobilePoster=(poster:string)=>poster.replace(/\.[^.]+$/, '-mobile.jpg');
 const pad=(n:number)=>String(n).padStart(2,'0');
 export default function Cinema({films}:{films:Film[]}) {
  const [introComplete,setIntroComplete]=useState(false);
+ const mobileSnapping=useRef(false);
+ const entranceStart=useRef<number|null>(null);
  const loaderWord=useRef<HTMLDivElement>(null);
  const [loaded,setLoaded]=useState(false),[progress,setProgress]=useState(0),[active,setActive]=useState(-1),[selected,setSelected]=useState<Film|null>(null);
  const runway=useRef<HTMLElement>(null),scene=useRef<HTMLDivElement>(null),brand=useRef<HTMLButtonElement>(null),intro=useRef<HTMLDivElement>(null),details=useRef<HTMLDivElement>(null),counter=useRef<HTMLDivElement>(null);
@@ -23,7 +26,7 @@ export default function Cinema({films}:{films:Film[]}) {
  useEffect(()=>{
   let cancelled=false,settled=0;
   const oldOverflow=document.documentElement.style.overflow;document.documentElement.style.overflow='hidden';
-  const assetSources=[...films.map(film=>film.poster),'/media/omar-world.png'];
+  const assetSources=[...films.map(film=>window.innerWidth<760?mobilePoster(film.poster):film.poster),'/media/omar-world.png'];
   const assets=assetSources.map(src=>new Promise<void>(resolve=>{const image=new Image();const done=()=>{settled++;if(!cancelled)setProgress(Math.round(settled/assetSources.length*100));resolve()};image.onload=done;image.onerror=done;image.src=src;if(image.complete){image.onload=null;image.onerror=null;done()}}));
   const maxWait=new Promise<void>(resolve=>{setTimeout(resolve,5000)});
   const minWait=new Promise<void>(resolve=>{setTimeout(resolve,window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:1800)});
@@ -32,14 +35,21 @@ export default function Cinema({films}:{films:Film[]}) {
  },[films]);
  useEffect(()=>{
   if(!loaded)return;
+  entranceStart.current=performance.now();
+  window.dispatchEvent(new Event('cinema-wake'));
   const word=loaderWord.current,target=brand.current;
   if(!word||!target){setIntroComplete(true);return;}
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){setIntroComplete(true);return;}
+  const focusAnimations=Array.from(word.querySelectorAll<HTMLElement>('.loader-letter')).map(letter=>{
+   const filter=getComputedStyle(letter).filter;
+   letter.style.animation='none';
+   return letter.animate([{filter},{filter:'blur(0px)'}],{duration:450,easing:'ease-out',fill:'forwards'});
+  });
   const from=word.getBoundingClientRect(),to=target.getBoundingClientRect();
   word.style.left=`${from.left}px`;word.style.top=`${from.top}px`;word.style.transform='none';word.style.transformOrigin='0 0';
   const animation=word.animate([{transform:'translate(0,0) scale(1)'},{transform:`translate(${to.left-from.left}px,${to.top-from.top}px) scale(${to.width/from.width})`}],{duration:1050,easing:'cubic-bezier(.76,0,.24,1)',fill:'forwards'});
   animation.onfinish=()=>setIntroComplete(true);
-  return()=>animation.cancel();
+  return()=>{animation.cancel();focusAnimations.forEach(effect=>effect.cancel());};
  },[loaded]);
  useEffect(()=>{window.dispatchEvent(new Event('cinema-wake'))},[selected]);
  const modalOpen=useRef(false);modalOpen.current=!!selected;
@@ -53,9 +63,9 @@ export default function Cinema({films}:{films:Film[]}) {
    raf=0;if(!runway.current||!scene.current)return;
    const target=clamp((window.scrollY-runway.current.offsetTop)/viewportH,0,1.25+Math.max(0,films.length-1)*.9);
    const dt=Math.min(64,time-last||16.7);last=time;
-   current=reduced.matches?target:lerp(current,target,1-Math.exp(-dt/110));
+   current=reduced.matches||mobileSnapping.current?target:lerp(current,target,1-Math.exp(-dt/110));
    if(Math.abs(target-current)<.0001)current=target;
-   const floating=current<1.25&&!reduced.matches&&!modalOpen.current;
+   const floating=entranceStart.current!==null&&current<1.25&&!reduced.matches&&!modalOpen.current;
    if(dirty||current!==target||floating){
     const zoom=smooth(current/1.25),position=Math.max(0,(current-1.25)/.9),mobile=viewportW<760;
     const focalWidth=Math.min(mobile?Math.min(viewportW*.82,viewportH*.52):viewportW*.36,620),focalHeight=focalWidth*.68;
@@ -78,20 +88,31 @@ export default function Cinema({films}:{films:Film[]}) {
      const ox=viewportW*.5+sx*radius*perspectiveScale*.96,oy=viewportH*(mobile?.498:.47)+sy*viewportH*(mobile?.24:.30)*perspectiveScale*.96-(latitude<0?viewportH*.11:0);
      const surfaceYaw=longitude>90?180-longitude:longitude< -90?-180-longitude:longitude;
      const gx=cx+Math.sin(d*.65)*viewportW*.18,gy=cy+d*viewportH*(mobile?.76:.56);
+     const entryTime=entranceStart.current===null?0:clamp((time-entranceStart.current-350-i*40)/1750);
+     const entrance=reduced.matches||target>.02?1:1-Math.pow(1-entryTime,3);
+     // Anchor the launch to the character's head/shoulders at every screen size.
+     const characterWidth=Math.min(viewportW*(mobile?.38:.19),viewportH*(mobile?.23:.27));
+     const characterHeight=characterWidth*1060/831;
+     const characterTop=viewportH*.62-characterHeight/2;
+     const side=ox<viewportW*.5?-1:1;
+     const fromShoulder=i%3!==0;
+     const startX=viewportW*.5+(fromShoulder?side*characterWidth*.18:0);
+     const startY=characterTop+characterHeight*(fromShoulder?.37:.18);
+     const controlX=startX+side*radius*.75,controlY=startY-characterHeight*.22;
+     const inverse=1-entrance;
+     const entryX=inverse*inverse*startX+2*inverse*entrance*controlX+entrance*entrance*ox;
+     const entryY=inverse*inverse*startY+2*inverse*entrance*controlY+entrance*entrance*oy;
      const scale=lerp(overviewWidth/focalWidth*lerp(.72,1.06,depth),Math.max(.5,1-Math.abs(d)*.14),zoom);
      const angle=lerp(tilt+(reduced.matches?0:Math.sin(drift+i)*3),clamp(d*10,-24,24),zoom);
      const opacity=lerp(1,1-smooth((Math.abs(d)-.65)/1.2),zoom);
      el.style.width=`${focalWidth}px`;el.style.height=`${focalHeight}px`;
-     el.style.transform=`translate3d(${lerp(ox,gx,zoom)-focalWidth/2}px,${lerp(oy,gy,zoom)-focalHeight/2}px,0) perspective(1200px) translate3d(calc(var(--hover-x,0)*12px),calc(var(--hover-y,0)*10px),calc(var(--hover-approach,0)*110px)) rotateX(calc(var(--hover-y,0)*-5deg)) rotateY(calc(var(--hover-x,0)*6deg)) rotateX(${lerp(latitude*.86,clamp(d*14,-30,30),zoom)}deg) rotateY(${lerp(-surfaceYaw*.88,clamp(d*-10,-20,20),zoom)}deg) rotate(${angle}deg) scale(${scale})`;
+     el.style.transform=`translate3d(${lerp(entryX,gx,zoom)-focalWidth/2}px,${lerp(entryY,gy,zoom)-focalHeight/2}px,0) perspective(1200px) translate3d(calc(var(--hover-x,0)*12px),calc(var(--hover-y,0)*10px),calc(var(--hover-approach,0)*110px)) rotateX(calc(var(--hover-y,0)*-5deg)) rotateY(calc(var(--hover-x,0)*6deg)) rotateX(${lerp(latitude*.86,clamp(d*14,-30,30),zoom)}deg) rotateY(${lerp(-surfaceYaw*.88,clamp(d*-10,-20,20),zoom)}deg) rotate(${angle}deg) scale(${scale*lerp(.035,1,entrance)})`;
      el.style.setProperty('--world-glow',String((1-zoom)*(.18+depth*.12)));
-     el.style.setProperty('--dream-contrast',String(lerp(.93,1,zoom)));
-     el.style.setProperty('--dream-saturation',String(lerp(.94,1,zoom)));
-     el.style.setProperty('--dream-softness',`${(1-zoom)*(1-depth)*.7}px`);
-     el.style.opacity=String(opacity*lerp(.72+depth*.28,1,zoom));el.style.filter='none';el.style.zIndex=String(zoom<.2?100+Math.round(restingDepth*40):150-Math.round(Math.abs(d)*10));
-     const interactive=zoom<.2||Math.abs(d)<.5;el.style.pointerEvents=interactive?'auto':'none';el.tabIndex=interactive?0:-1;el.setAttribute('aria-hidden',String(!interactive));
+     el.style.opacity=String(opacity*lerp(.65+restingDepth*.24,1,zoom)*smooth(entrance*3));el.style.filter='none';el.style.zIndex=String(entrance<.35?110:zoom<.2?100+Math.round(restingDepth*40):150-Math.round(Math.abs(d)*10));
+     const interactive=entrance>.85&&(zoom<.2||Math.abs(d)<.5);el.style.pointerEvents=interactive?'auto':'none';el.tabIndex=interactive?0:-1;el.setAttribute('aria-hidden',String(!interactive));
      el.style.setProperty('--caption-opacity',String(0));el.style.setProperty('--overview-scale',String(overviewWidth/focalWidth));
     });
-    if(character.current){character.current.style.transform=`translate3d(-50%,calc(-50% - ${zoom*viewportH*.85}px),0) scale(${1-zoom*.18})`;character.current.style.opacity=String(1-smooth(zoom/.7));}
+    if(character.current){character.current.style.zIndex=String(zoom===0&&entranceStart.current!==null&&time-entranceStart.current<2600?145:125);character.current.style.transform=`translate3d(-50%,calc(-50% - ${zoom*viewportH*.85}px),0) scale(${1-zoom*.18})`;character.current.style.opacity=String(1-smooth(zoom/.7));}
     if(intro.current){intro.current.style.opacity=String(1-smooth(current/.6));intro.current.style.transform=`translate3d(0,${-current*25}px,0)`;intro.current.style.pointerEvents=current<.3?'auto':'none';}
     scene.current.style.setProperty('--project-progress',String(zoom));
     scene.current.classList.toggle('is-project-view',current>.05);
@@ -113,6 +134,45 @@ export default function Cinema({films}:{films:Film[]}) {
   window.addEventListener('cinema-wake',wake);window.addEventListener('scroll',wake,{passive:true});window.addEventListener('resize',updateSize);window.addEventListener('resize',wake);reduced.addEventListener('change',wake);document.addEventListener('visibilitychange',onVisibility);wake();
   return()=>{cancelAnimationFrame(raf);window.removeEventListener('cinema-wake',wake);window.removeEventListener('scroll',wake);window.removeEventListener('resize',updateSize);window.removeEventListener('resize',wake);reduced.removeEventListener('change',wake);document.removeEventListener('visibilitychange',onVisibility)};
  },[films]);
+ // On phones, settle after touch momentum finishes; desktop stays continuous.
+ useEffect(()=>{
+  if(!loaded||selected)return;
+  const mobile=window.matchMedia('(max-width: 759px)');
+  let timer=0,frame=0,touching=false;
+  const cancel=()=>{clearTimeout(timer);cancelAnimationFrame(frame);frame=0;mobileSnapping.current=false;};
+  const settle=()=>{
+   if(!mobile.matches||touching||document.hidden||!scene.current||!runway.current)return;
+   const height=scene.current.clientHeight,origin=runway.current.offsetTop;
+   const position=(window.scrollY-origin)/height,lastStop=1.25+(films.length-1)*.9;
+   if(position<=.02||position>lastStop+.04)return;
+   const stopPosition=position<.625?0:1.25+Math.round(Math.max(0,position-1.25)/.9)*.9;
+   const destination=origin+stopPosition*height,from=window.scrollY;
+   if(Math.abs(destination-from)<1)return;
+   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){window.scrollTo({top:destination,behavior:'instant'});return;}
+   const start=performance.now(),duration=420+Math.min(180,Math.abs(destination-from)*.25);
+   mobileSnapping.current=true;
+   const animate=(now:number)=>{
+    const t=clamp((now-start)/duration);
+    window.scrollTo({top:lerp(from,destination,1-Math.pow(1-t,3)),behavior:'instant'});
+    window.dispatchEvent(new Event('cinema-wake'));
+    if(t<1)frame=requestAnimationFrame(animate);
+    else{frame=0;mobileSnapping.current=false;}
+   };
+   frame=requestAnimationFrame(animate);
+  };
+  const schedule=()=>{if(!mobile.matches||mobileSnapping.current||touching)return;clearTimeout(timer);timer=window.setTimeout(settle,240);};
+  const beginTouch=()=>{touching=true;cancel();};
+  const endTouch=()=>{touching=false;schedule();};
+  window.addEventListener('scroll',schedule,{passive:true});
+  window.addEventListener('touchstart',beginTouch,{passive:true});
+  window.addEventListener('touchend',endTouch,{passive:true});
+  window.addEventListener('touchcancel',endTouch,{passive:true});
+  window.addEventListener('pointerdown',cancel,{passive:true});
+  window.addEventListener('wheel',cancel,{passive:true});
+  window.addEventListener('resize',cancel);
+  document.addEventListener('visibilitychange',cancel);
+  return()=>{cancel();window.removeEventListener('scroll',schedule);window.removeEventListener('touchstart',beginTouch);window.removeEventListener('touchend',endTouch);window.removeEventListener('touchcancel',endTouch);window.removeEventListener('pointerdown',cancel);window.removeEventListener('wheel',cancel);window.removeEventListener('resize',cancel);document.removeEventListener('visibilitychange',cancel);};
+ },[loaded,selected,films.length]);
  function go(index:number){const top=index<0?0:(1.25+clamp(index,0,films.length-1)*.9)*(scene.current?.clientHeight||window.innerHeight);window.scrollTo({top,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}
  function resetCoverTilt(element:HTMLButtonElement){
   element.style.setProperty('--hover-x','0');element.style.setProperty('--hover-y','0');
@@ -128,7 +188,7 @@ export default function Cinema({films}:{films:Film[]}) {
  function openFilm(film:Film){setSelected(film)}
  const film=films[Math.max(0,active)];
  return <>
- {!introComplete&&<div className={`preloader ${loaded?'is-leaving':''}`}><output className="sr-only">Opening projects: {progress}%</output><div className="loader-top"><span>OMAR ALOTHMAN</span><span>FILM / DIRECTION</span></div><div className="loader-word" ref={loaderWord}><span>OMAR</span><span>ALOTHMAN</span></div><div className="loader-bottom"><span>Opening projects</span><span>{pad(progress)} / 100</span><button onClick={()=>{setLoaded(true);document.documentElement.style.overflow='';}}>Skip intro</button></div><div className="loader-progress" style={{transform:`scaleX(${progress/100})`}}/></div>}
+ {!introComplete&&<div className={`preloader ${loaded?'is-leaving':''}`}><output className="sr-only">Opening projects: {progress}%</output><div className="loader-top"><span>OMAR ALOTHMAN</span><span>FILM / DIRECTION</span></div><div className="loader-word" ref={loaderWord} aria-label="Omar Alothman">{['OMAR','ALOTHMAN'].map((word,row)=><span className="loader-line" aria-hidden="true" key={word}>{Array.from(word).map((letter,index)=><span className="loader-letter" key={index} style={{'--focus-phase':`${-(index*.23+row*.71)}s`} as CSSProperties}>{letter}</span>)}</span>)}</div><div className="loader-bottom"><span>Opening projects</span><span>{pad(progress)} / 100</span><button onClick={()=>{setLoaded(true);document.documentElement.style.overflow='';}}>Skip intro</button></div><div className="loader-progress" style={{transform:`scaleX(${progress/100})`}}/></div>}
  <main inert={!loaded} className={`cinema ${loaded?'is-ready':''} ${introComplete?'intro-complete':''}`}>
  <a className="skip-link" href="#film-list">Skip animation / Browse projects</a>
  <button onClick={()=>go(-1)} ref={brand} className="brand" aria-label="Omar Alothman — all projects"><span>OMAR</span><span>ALOTHMAN</span></button>
@@ -137,7 +197,7 @@ export default function Cinema({films}:{films:Film[]}) {
  <div className="cinema-scene" ref={scene}>
  <div className="overview-copy" ref={intro} inert={active>=0}><div className="overview-heading"><h1>Projects.</h1><span>A selection by Omar Alothman</span></div><div className="overview-bottom"><span>{pad(films.length)} projects<br/>A collection in motion</span><button onClick={()=>go(0)}>Scroll to explore <span className="scroll-line"/></button><span>Film. Feeling.<br/>A different perspective.</span></div></div>
  <div className="film-space"><div className="world-character" ref={character} aria-hidden="true"><div className="world-halo"/><CharacterMotion active={loaded && active<0 && !selected}/></div>
- {films.map((f,i)=><button ref={el=>{cards.current[i]=el}} key={f.slug} className="film-plane" onPointerEnter={tiltCover} onPointerMove={tiltCover} onPointerLeave={event=>resetCoverTilt(event.currentTarget)} onPointerCancel={event=>resetCoverTilt(event.currentTarget)} onBlur={event=>resetCoverTilt(event.currentTarget)} style={{'--entry-delay':`${i*.045}s`} as CSSProperties} onClick={event=>{resetCoverTilt(event.currentTarget);openFilm(f)}} aria-label={`Open ${f.title}`}><span className="cover-window"><img src={f.poster} alt={f.title} fetchPriority={i<2?'high':'auto'}/></span><span className="plane-label"><span>{pad(i+1)}</span><span className="plane-name">{f.title}</span></span><span className="plane-play" aria-hidden="true"><ArrowUpRight/></span></button>)}</div>
+ {films.map((f,i)=><button ref={el=>{cards.current[i]=el}} key={f.slug} className="film-plane" onPointerEnter={tiltCover} onPointerMove={tiltCover} onPointerLeave={event=>resetCoverTilt(event.currentTarget)} onPointerCancel={event=>resetCoverTilt(event.currentTarget)} onBlur={event=>resetCoverTilt(event.currentTarget)} style={{'--entry-delay':`${i*.045}s`} as CSSProperties} onClick={event=>{resetCoverTilt(event.currentTarget);openFilm(f)}} aria-label={`Open ${f.title}`}><span className="cover-window"><picture><source media="(max-width: 759px)" srcSet={mobilePoster(f.poster)}/><img src={f.poster} alt={f.title} fetchPriority={i<2?'high':'auto'} decoding="async"/></picture></span><span className="plane-label"><span>{pad(i+1)}</span><span className="plane-name">{f.title}</span></span><span className="plane-play" aria-hidden="true"><ArrowUpRight/></span></button>)}</div>
  <div className="film-information" ref={details} aria-hidden={active<0}><div className="film-role"><span className="eyebrow">Role</span><p>{film?.role}</p><span className="eyebrow">{film?.year?'Year':'Type'}</span><p>{film?.year||film?.category}</p></div>{films.map((f,i)=><div className="film-title project-caption" key={f.slug} ref={el=>{captions.current[i]=el}}><span className="eyebrow">{f.category}</span><h2>{f.title}</h2><button className="underlined" tabIndex={active===i?0:-1} onClick={()=>openFilm(f)}>View project <ArrowUpRight className="ui-icon" aria-hidden="true"/></button></div>)}</div>
  <div className="film-counter" ref={counter}><span className="eyebrow">Selected project</span><span className="counter-number">{pad(Math.max(0,active)+1)}</span><span className="counter-total">/{pad(films.length)}</span></div>
  <div className="scene-bottom"><button onClick={()=>go(-1)}>Overview</button><div className="scene-progress">{films.map((f,i)=><button key={f.slug} onClick={()=>go(i)} aria-label={`Go to ${f.title}`} aria-current={i===active?'true':undefined}><span/></button>)}</div><div className="scene-arrows"><button disabled={active<0} aria-label="Previous project" onClick={()=>go(active-1)}><ArrowUp aria-hidden="true"/></button><button disabled={active===films.length-1} aria-label="Next project" onClick={()=>go(active+1)}><ArrowDown aria-hidden="true"/></button></div></div>

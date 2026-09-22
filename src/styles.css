@@ -114,6 +114,25 @@
 @media(max-width:759px){.photo-viewer{width:94vw!important;padding:12px!important;border-radius:14px!important;gap:10px}.photo-project-name{display:none}.photo-dismiss{margin-left:auto}.photo-caption{font-size:11px;margin-bottom:10px}.photo-swipe-hint{display:block;margin-top:3px}.photo-stage{min-height:140px}}
 @media(prefers-reduced-motion:reduce){.photo-enter-next,.photo-enter-previous{animation:none}.photo-drag{transition:none!important}}
 
-/* Diffused opening light stays behind the matte, crisply cut plates. */
-.film-plane:before{display:block;inset:-18%;border-radius:35%;background:radial-gradient(ellipse at 50% 55%,#bdc5d080 0%,#acb9cc38 38%,transparent 72%);filter:blur(22px);opacity:var(--world-glow,0);pointer-events:none}
-.film-plane .cover-window img,.film-plane:hover .cover-window img,.film-plane:focus-visible .cover-window img{filter:contrast(var(--dream-contrast,1)) saturate(var(--dream-saturation,1)) blur(var(--dream-softness,0px))}
+/* A static, feathered halo avoids expensive animated blur surfaces on Safari. */
+.film-plane:before{display:block;inset:-18%;border-radius:35%;background:radial-gradient(ellipse at 50% 55%,#bdc5d070 0%,#acb9cc28 35%,transparent 70%);filter:none;opacity:var(--world-glow,0);pointer-events:none}
+.film-plane .cover-window img,.film-plane:hover .cover-window img,.film-plane:focus-visible .cover-window img{filter:none}
+.cover-window picture{display:block;width:100%;height:100%}
+.is-ready .cover-window{animation:none}
+@media(max-width:759px){
+ .world-halo{filter:none;animation:none}
+ .project-caption{will-change:transform,opacity}
+ .film-plane .cover-window{box-shadow:1px 2px 0 #1b1c20,2px 4px 0 #101114,3px 6px 0 #0b0c0e,4px 9px 15px #0006}
+}
+
+/* A travelling focus wave, confined to the short-lived loading title. */
+.loader-word .loader-line{display:block;white-space:nowrap}
+.loader-word .loader-letter{display:inline-block;animation:loader-focus-wave 2.15s ease-in-out infinite;animation-delay:var(--focus-phase,0s)}
+@keyframes loader-focus-wave{
+ 0%,100%{filter:blur(0);transform:translateY(0)}
+ 22%{filter:blur(0);transform:translateY(0)}
+ 48%{filter:blur(.055em);transform:translateY(-.018em)}
+ 72%{filter:blur(.018em);transform:translateY(.008em)}
+ 88%{filter:blur(0);transform:translateY(0)}
+}
+@media(prefers-reduced-motion:reduce){.loader-word .loader-letter{filter:none;transform:none;animation:none}}
