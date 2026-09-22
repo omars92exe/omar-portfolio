@@ -149,7 +149,7 @@ export default function Cinema({films}:{films:Film[]}) {
    const destination=origin+stopPosition*height,from=window.scrollY;
    if(Math.abs(destination-from)<1)return;
    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){window.scrollTo({top:destination,behavior:'instant'});return;}
-   const start=performance.now(),duration=420+Math.min(180,Math.abs(destination-from)*.25);
+   const start=performance.now(),duration=260+Math.min(100,Math.abs(destination-from)*.15);
    mobileSnapping.current=true;
    const animate=(now:number)=>{
     const t=clamp((now-start)/duration);
@@ -160,7 +160,7 @@ export default function Cinema({films}:{films:Film[]}) {
    };
    frame=requestAnimationFrame(animate);
   };
-  const schedule=()=>{if(!mobile.matches||mobileSnapping.current||touching)return;clearTimeout(timer);timer=window.setTimeout(settle,240);};
+  const schedule=()=>{if(!mobile.matches||mobileSnapping.current||touching)return;clearTimeout(timer);timer=window.setTimeout(settle,110);};
   const beginTouch=()=>{touching=true;cancel();};
   const endTouch=()=>{touching=false;schedule();};
   window.addEventListener('scroll',schedule,{passive:true});
